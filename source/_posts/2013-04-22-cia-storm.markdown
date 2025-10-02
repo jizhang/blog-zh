@@ -73,7 +73,7 @@ Storm 脚本的英文名称叫做“Storm Topology”，直译过来是“拓扑
 
 这里将 `[storm "0.8.2"]` 依赖项定义在了 `:dev` 配置下，如果直接定义在外层的 `:dependencies` 下，那在使用 `lein uberjar` 进行打包时，会将 `storm.jar` 包含在最终的 Jar 包中，提交到 Storm 集群运行时就会报冲突。而 `lein uberjar` 默认会跳过 `:dev` 配置，所以才这样定义。
 
-`:aot` 表示 Ahead Of Time，即预编译。我们在 [Clojure实战（3）](http://shzhangji.com/blog/2012/12/16/cia-noir-3/)中提过 `:gen-class` 这个标识表示为当前 `.clj` 文件生成一个 `.class` 文件，从而能够作为 `main` 函数使用，因此也需要在 `project.clj` 中添加 `:main` 标识，指向这个 `.clj` 文件的命名空间。如果想为其它的命名空间也生成对应的 `.class` 文件，就需要用到 `:aot` 了。它的另一个用处是加速 Clojure 程序的启动速度。
+`:aot` 表示 Ahead Of Time，即预编译。我们在 {% post_link cia-noir-3 %} 中提过 `:gen-class` 这个标识表示为当前 `.clj` 文件生成一个 `.class` 文件，从而能够作为 `main` 函数使用，因此也需要在 `project.clj` 中添加 `:main` 标识，指向这个 `.clj` 文件的命名空间。如果想为其它的命名空间也生成对应的 `.class` 文件，就需要用到 `:aot` 了。它的另一个用处是加速 Clojure 程序的启动速度。
 
 ### sentence-spout
 

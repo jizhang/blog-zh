@@ -3,8 +3,8 @@ layout: post
 title: "开源软件架构 - 卷1：第14章 Python 打包工具"
 date: 2012-11-18 19:20
 comments: true
-categories: Programming
-tags: [aosa, python, translation]
+categories: Translation
+tags: [aosa, python]
 ---
 
 作者：[Tarek Ziadé](http://www.aosabook.org/en/intro1.html#ziade-tarek)，翻译：[张吉](mailto:zhangji87@gmail.com)

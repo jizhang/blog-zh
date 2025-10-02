@@ -3,8 +3,8 @@ layout: post
 title: "贫血领域模型"
 date: 2015-09-05 19:02
 comments: true
-categories: [Programming]
-tags: [translation]
+categories: Translation
+tags: [software development, domain driven design]
 published: true
 ---
 

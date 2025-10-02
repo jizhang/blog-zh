@@ -5,7 +5,7 @@ tags:
   - analytics
   - opensource
 categories:
-  - Digest
+  - Translation
 date: 2017-09-06 09:49:10
 ---
 

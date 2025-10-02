@@ -13,7 +13,7 @@ Apache Flume 数据流程的最后一部分是 Sink，它会将上游抽取并�
 
 ## Sink 组件的生命周期
 
-[在上一篇文章中][1], 我们了解到 Flume 组件都会实现 `LifecycleAware` 接口，并由 `LifecycleSupervisor` 实例管理和监控。不过，Sink 组件并不直接由它管理，而且被包装在了 `SinkRunner` 和 `SinkProcessor` 这两个类中。Flume 支持三种 [Sink 处理器][2]，该处理器会将 Channel 和 Sink 以不同的方式连接起来。这里我们只讨论 `DefaultSinkProcessor` 的情况，即一个 Channel 只会连接一个 Sink。同时，我们也将略过对 Sink 分组的讨论。
+{% post_link flume-source-code-component-lifecycle 在上一篇文章中 %}, 我们了解到 Flume 组件都会实现 `LifecycleAware` 接口，并由 `LifecycleSupervisor` 实例管理和监控。不过，Sink 组件并不直接由它管理，而且被包装在了 `SinkRunner` 和 `SinkProcessor` 这两个类中。Flume 支持三种 [Sink 处理器][2]，该处理器会将 Channel 和 Sink 以不同的方式连接起来。这里我们只讨论 `DefaultSinkProcessor` 的情况，即一个 Channel 只会连接一个 Sink。同时，我们也将略过对 Sink 分组的讨论。
 
 ![Sink Component LifeCycle](/images/flume/sink-component-lifecycle.png)
 
@@ -244,7 +244,6 @@ for (ExecutorService execService : toShutdown) {
 * http://hadoop-hbase.blogspot.com/2012/05/hbase-hdfs-and-durable-sync.html
 
 
-[1]: http://shzhangji.com/cnblogs/2017/10/24/flume-source-code-component-lifecycle/
 [2]: https://flume.apache.org/FlumeUserGuide.html#flume-sink-processors
 [3]: http://hadoop.apache.org/docs/r2.4.1/api/org/apache/hadoop/fs/FileSystem.html
 [4]: https://hadoop.apache.org/docs/r2.4.1/api/org/apache/hadoop/fs/FSDataOutputStream.html

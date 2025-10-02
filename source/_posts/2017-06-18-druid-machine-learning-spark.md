@@ -7,7 +7,7 @@ tags:
   - stream processing
   - spark
 categories:
-  - Digest
+  - Translation
 date: 2017-06-18 10:41:59
 ---
 

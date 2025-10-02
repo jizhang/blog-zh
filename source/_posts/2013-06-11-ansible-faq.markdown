@@ -3,8 +3,8 @@ layout: post
 title: "Ansible FAQ"
 date: 2013-06-11 21:18
 comments: true
-categories: Programming
-tags: [ops, translation]
+categories: Translation
+tags: [ops, ansible]
 published: true
 ---
 
