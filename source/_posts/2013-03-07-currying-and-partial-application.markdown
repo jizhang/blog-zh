@@ -3,8 +3,8 @@ layout: post
 title: "柯里化与偏应用（JavaScript 描述）"
 date: 2013-03-07 20:59
 comments: true
-categories: Programming
-tags: [functional programming, javascript, translation]
+categories: Translation
+tags: [functional programming, javascript]
 ---
 
 原文：[http://raganwald.com/2013/03/07/currying-and-partial-application.html](http://raganwald.com/2013/03/07/currying-and-partial-application.html)

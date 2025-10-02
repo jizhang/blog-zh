@@ -3,8 +3,8 @@ layout: post
 title: "Apache Hadoop YARN - 项目背景与简介"
 date: 2013-05-25 10:57
 comments: true
-categories: Big Data
-tags: [hadoop, translation]
+categories: Translation
+tags: [hadoop]
 published: true
 ---
 

@@ -3,8 +3,8 @@ layout: post
 title: "Java 反射机制"
 date: 2014-01-25 09:42
 comments: true
-categories: Programming
-tags: [translation]
+categories: Translation
+tags: [java]
 published: true
 ---
 

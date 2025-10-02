@@ -3,8 +3,8 @@ layout: post
 title: "Clojure 代码规范"
 date: 2013-01-04 20:49
 comments: true
-categories: Programming
-tags: [clojure, translation]
+categories: Translation
+tags: [clojure]
 published: true
 ---
 
