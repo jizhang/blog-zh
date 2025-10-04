@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches: [master]
 
 jobs:
   release:
@@ -12,13 +11,37 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - run: tar acf public.tar.gz public
-      - uses: softprops/action-gh-release@v1
-        with:
-          files: public.tar.gz
+
+      - name: Build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+          tar zcf build.tar.gz -C public .
+
+      - name: Deploy
+        env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          HMAC_SECRET: ${{ secrets.HMAC_SECRET }}
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+        run: |
+          PROJECT=$(echo -n "$GITHUB_REPOSITORY" | cut -d'/' -f2)
+          SHORT_SHA=${GITHUB_SHA:0:8}
+          FILE_HASH=$(sha256sum build.tar.gz | cut -d' ' -f1)
+          TIMESTAMP=$(date +%s)
+          MESSAGE="project=$PROJECT&short_sha=$SHORT_SHA&file_hash=$FILE_HASH&timestamp=$TIMESTAMP"
+          SIGNATURE=$(echo -n "$MESSAGE" | openssl dgst -sha256 -hmac "$HMAC_SECRET" | cut -d' ' -f2)
+
+          curl -X POST \
+            -H "Authorization: Bearer $AUTH_TOKEN" \
+            -F "project=$PROJECT" \
+            -F "short_sha=$SHORT_SHA" \
+            -F "file_hash=$FILE_HASH" \
+            -F "timestamp=$TIMESTAMP" \
+            -F "signature=$SIGNATURE" \
+            -F "file=@build.tar.gz" \
+            $DEPLOY_URL

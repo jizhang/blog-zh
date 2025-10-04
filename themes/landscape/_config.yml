@@ -1,10 +1,10 @@
 # Header
 menu:
   首页: /
-  大数据: /categories/Big-Data
-  编程: /categories/Programming
-  翻译: /categories/Translation
-  全部文章: /archives
+  大数据: /categories/Big-Data/
+  编程: /categories/Programming/
+  翻译: /categories/Translation/
+  全部文章: /archives/
   English: https://jerrydata.dev
 rss: /cn/atom.xml
 
