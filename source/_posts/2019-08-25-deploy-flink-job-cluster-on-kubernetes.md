@@ -5,6 +5,7 @@ tags:
   - flink
 categories: Big Data
 date: 2019-08-25 11:02:22
+alt_en: /2019/08/24/deploy-flink-job-cluster-on-kubernetes/
 ---
 
 [Kubernetes][8] 是目前非常流行的容器编排系统，在其之上可以运行 Web 服务、大数据处理等各类应用。这些应用被打包在一个个非常轻量的容器中，我们通过声明的方式来告知 Kubernetes 要如何部署和扩容这些程序，并对外提供服务。[Flink][9] 同样是非常流行的分布式处理框架，它也可以运行在 Kubernetes 之上。将两者相结合，我们就可以得到一个健壮和高可扩的数据处理应用，并且能够更安全地和其它服务共享一个 Kubernetes 集群。

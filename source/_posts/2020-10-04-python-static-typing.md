@@ -1,9 +1,9 @@
 ---
 title: Python 类型检查实践
-tags:
-  - python
 categories: Programming
+tags: [python, mypy]
 date: 2020-10-04 19:11:18
+alt_en: /2024/01/19/python-static-type-check/
 ---
 
 
