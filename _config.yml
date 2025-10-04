@@ -12,8 +12,8 @@ timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://jerrydata.dev/cn
-root: /cn/
+url: https://jerrydata.dev/zh
+root: /zh/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
