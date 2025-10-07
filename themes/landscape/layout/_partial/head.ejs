@@ -22,14 +22,37 @@
   <title><% if (title){ %><%= title %> | <% } %><%= config.title %></title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <% if (page.alt_zh) { %>
-    <link rel="alternate" hreflang="en" href="<%= page.permalink %>">
-    <link rel="alternate" hreflang="zh" href="<%- full_url_for('zh/' + page.alt_zh) %>">
-    <link rel="alternate" hreflang="x-default" href="<%= page.permalink %>">
-  <% } else if (page.alt_en) { %>
-    <link rel="alternate" hreflang="en" href="<%- full_url_for('../' + page.alt_en) %>">
-    <link rel="alternate" hreflang="zh" href="<%= page.permalink %>">
-    <link rel="alternate" hreflang="x-default" href="<%- full_url_for('../' + page.alt_en) %>">
+  <%
+  var alternate = null
+  if ((is_home() || (is_category() && !is_category('Translation')) || is_archive()) && page.current === 1) {
+    if (config.language === 'en') {
+      alternate = {
+        en: page.current_url,
+        zh: 'zh/' + page.current_url,
+      }
+    } else {
+      alternate = {
+        en: '../' + page.current_url,
+        zh: page.current_url,
+      }
+    }
+  } else if (page.alt_zh) {
+    alternate = {
+      en: page.path,
+      zh: 'zh/' + page.alt_zh,
+    }
+  } else if (page.alt_en) {
+    alternate = {
+      en: '../' + page.alt_en,
+      zh: page.path,
+    }
+  }
+  %>
+
+  <% if (alternate !== null) { %>
+  <link rel="alternate" hreflang="en" href="<%- full_url_for(alternate.en) %>">
+  <link rel="alternate" hreflang="zh" href="<%- full_url_for(alternate.zh) %>">
+  <link rel="alternate" hreflang="x-default" href="<%- full_url_for(alternate.en) %>">
   <% } %>
 
   <%- open_graph({twitter_id: theme.twitter, google_plus: theme.google_plus, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
