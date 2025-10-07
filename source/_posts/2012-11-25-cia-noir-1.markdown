@@ -100,7 +100,7 @@ Starting server...
 2012-11-29 22:34:39.237:INFO::Started SocketConnector@0.0.0.0:8080
 ```
 
-浏览http://localhost:8080，就能看到项目的页面了。
+浏览 http://localhost:8080 就能看到项目的页面了。
 
 Noir项目的基本结构
 ------------------
