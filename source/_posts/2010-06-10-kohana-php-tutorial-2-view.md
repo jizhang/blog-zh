@@ -41,7 +41,11 @@ public function action_index()
 }
 ```
 
-保存文件，在浏览器中输入 http://yourserver/myfirstkohana3/ 这时你就应该能够看到“This is my first view”的字样。上面的代码非常简单，使用 `View` 类的 `factory` 方法来加载 application/views/pages/ko3.php，经过处理后发送到客户端中。这似乎还不足以让人兴奋，那就让我们回到视图文件（application/views/pages/ko3.php），在 `<h1>` 标签后添加以下代码：
+保存文件，在浏览器中输入 http://yourserver/myfirstkohana3/ 这时你就应该能够看到“This is my first view”的字样。
+
+<!-- more -->
+
+上面的代码非常简单，使用 `View` 类的 `factory` 方法来加载 application/views/pages/ko3.php，经过处理后发送到客户端中。这似乎还不足以让人兴奋，那就让我们回到视图文件（application/views/pages/ko3.php），在 `<h1>` 标签后添加以下代码：
 
 ```php
 <?php echo $content; ?>
