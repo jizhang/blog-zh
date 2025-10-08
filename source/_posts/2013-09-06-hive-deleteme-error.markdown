@@ -60,7 +60,7 @@ $ mysql -uhive -ppassword hive
 
 这样就可以彻底解决这个异常了。
 
-为什么 HWI(Hive Web Interface) 没有遇到类似问题？因为它是常驻内存的，`DELETEME` 表只会在启动的时候创建，后续的查询不会创建。而我们这里每次调用 `hive` 命令行都会去创建，所以才有这样的问题。
+为什么 HWI (Hive Web Interface) 没有遇到类似问题？因为它是常驻内存的，`DELETEME` 表只会在启动的时候创建，后续的查询不会创建。而我们这里每次调用 `hive` 命令行都会去创建，所以才有这样的问题。
 
 ## 参考链接
 * http://www.cnblogs.com/ggjucheng/archive/2012/07/25/2608633.html
