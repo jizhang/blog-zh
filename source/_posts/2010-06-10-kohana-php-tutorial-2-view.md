@@ -158,14 +158,14 @@ public function action_index()
 
 ```php
 <html>
- <head>
-  <title>Hello!</title>
- </head>
- <body>
-  <h1>This is my first view</h1>
-  <?php echo $content;?>
-  <?php echo View::factory('blocks/ko3_inner')->render(); ?>
- </body>
+  <head>
+    <title>Hello!</title>
+  </head>
+  <body>
+    <h1>This is my first view</h1>
+    <?php echo $content;?>
+    <?php echo View::factory('blocks/ko3_inner')->render(); ?>
+  </body>
 </html>
 ```
 

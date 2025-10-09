@@ -10,7 +10,7 @@ date: 2024-02-07 13:28:41
 alt_en: /2024/02/07/dependency-injection-in-flink/
 ---
 
-*本文由 Qwen3 Max 翻译*
+本文由 Qwen3 Max 翻译，原文：https://jerrydata.dev/2024/02/07/dependency-injection-in-flink/
 
 ## TL;DR
 
