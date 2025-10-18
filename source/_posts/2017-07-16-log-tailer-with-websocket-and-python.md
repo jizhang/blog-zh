@@ -4,7 +4,7 @@ tags:
   - python
   - websocket
   - ops
-categories: Programming
+categories: DevOps
 date: 2017-07-16 15:55:05
 ---
 
