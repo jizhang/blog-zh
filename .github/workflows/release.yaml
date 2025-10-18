@@ -6,7 +6,11 @@ on:
 
 jobs:
   release:
+    strategy:
+      matrix:
+        environment: [prod-sg]
     runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,23 +29,22 @@ jobs:
 
       - name: Deploy
         env:
-          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-          HMAC_SECRET: ${{ secrets.HMAC_SECRET }}
-          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_IP: ${{ secrets.DEPLOY_IP }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          CA_CERT: ${{ secrets.CA_CERT }}
+          CLIENT_CERT: ${{ secrets.CLIENT_CERT }}
+          CLIENT_KEY: ${{ secrets.CLIENT_KEY }}
         run: |
           PROJECT=$(echo -n "$GITHUB_REPOSITORY" | cut -d'/' -f2)
           SHORT_SHA=${GITHUB_SHA:0:8}
-          FILE_HASH=$(sha256sum build.tar.gz | cut -d' ' -f1)
-          TIMESTAMP=$(date +%s)
-          MESSAGE="project=$PROJECT&short_sha=$SHORT_SHA&file_hash=$FILE_HASH&timestamp=$TIMESTAMP"
-          SIGNATURE=$(echo -n "$MESSAGE" | openssl dgst -sha256 -hmac "$HMAC_SECRET" | cut -d' ' -f2)
 
           curl -X POST \
-            -H "Authorization: Bearer $AUTH_TOKEN" \
             -F "project=$PROJECT" \
             -F "short_sha=$SHORT_SHA" \
-            -F "file_hash=$FILE_HASH" \
-            -F "timestamp=$TIMESTAMP" \
-            -F "signature=$SIGNATURE" \
             -F "file=@build.tar.gz" \
-            $DEPLOY_URL
+            --cacert "$CA_CERT" \
+            --cert "$CLIENT_CERT" \
+            --key "$CLIENT_KEY" \
+            --resolve $DEPLOY_HOST:$DEPLOY_PORT:$DEPLOY_IP \
+            https://$DEPLOY_HOST:$DEPLOY_PORT/deploy/mtls
