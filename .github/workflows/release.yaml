@@ -5,12 +5,8 @@ on:
     branches: [master]
 
 jobs:
-  release:
-    strategy:
-      matrix:
-        environment: [prod-sg]
+  build:
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,8 +23,22 @@ jobs:
           yarn build
           tar zcf build.tar.gz -C public .
 
+      - uses: actions/upload-artifact@v4
+        with:
+          path: build.tar.gz
+
+  deploy-mtls:
+    needs: build
+    strategy:
+      matrix:
+        environment: [prod-sg]
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/download-artifact@v5
       - name: Deploy
         env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_IP: ${{ secrets.DEPLOY_IP }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
@@ -44,6 +54,7 @@ jobs:
           echo -n "$CLIENT_KEY" > $RUNNER_TEMP/client.key
 
           curl -X POST \
+            -H "Authorization: Bearer $AUTH_TOKEN" \
             -F "project=$PROJECT" \
             -F "short_sha=$SHORT_SHA" \
             -F "file=@build.tar.gz" \
@@ -52,3 +63,34 @@ jobs:
             --key $RUNNER_TEMP/client.key \
             --resolve $DEPLOY_HOST:$DEPLOY_PORT:$DEPLOY_IP \
             https://$DEPLOY_HOST:$DEPLOY_PORT/deploy/mtls
+
+  deploy-hmac:
+    needs: build
+    strategy:
+      matrix:
+        environment: [prod-jp]
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/download-artifact@v5
+      - name: Deploy
+        env:
+          HMAC_SECRET: ${{ secrets.HMAC_SECRET }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          PROJECT=$(echo -n "$GITHUB_REPOSITORY" | cut -d'/' -f2)
+          SHORT_SHA=${GITHUB_SHA:0:8}
+          FILE_HASH=$(sha256sum build.tar.gz | cut -d' ' -f1)
+          TIMESTAMP=$(date +%s)
+          MESSAGE="project=$PROJECT&short_sha=$SHORT_SHA&file_hash=$FILE_HASH&timestamp=$TIMESTAMP"
+          SIGNATURE=$(echo -n "$MESSAGE" | openssl dgst -sha256 -hmac "$HMAC_SECRET" | cut -d' ' -f2)
+
+          curl -X POST \
+            -F "project=$PROJECT" \
+            -F "short_sha=$SHORT_SHA" \
+            -F "file_hash=$FILE_HASH" \
+            -F "timestamp=$TIMESTAMP" \
+            -F "signature=$SIGNATURE" \
+            -F "file=@build.tar.gz" \
+            http://$DEPLOY_HOST:$DEPLOY_PORT/deploy/hmac
