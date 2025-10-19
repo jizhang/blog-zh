@@ -1,11 +1,9 @@
 ---
 title: 使用 WebSocket 和 Python 编写日志查看器
-tags:
-  - python
-  - websocket
-  - ops
-categories: DevOps
+categories: [DevOps]
+tags: [python, websocket]
 date: 2017-07-16 15:55:05
+alt_en: /2017/07/15/log-tailer-with-websocket-and-python/
 ---
 
 
