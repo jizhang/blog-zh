@@ -62,13 +62,14 @@ jobs:
             --cert $RUNNER_TEMP/client.crt \
             --key $RUNNER_TEMP/client.key \
             --resolve $DEPLOY_HOST:$DEPLOY_PORT:$DEPLOY_IP \
+            --fail \
             https://$DEPLOY_HOST:$DEPLOY_PORT/deploy/mtls
 
   deploy-hmac:
     needs: build
     strategy:
       matrix:
-        environment: [prod-jp]
+        environment: [prod-jp, prod-hk]
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     steps:
@@ -93,4 +94,5 @@ jobs:
             -F "timestamp=$TIMESTAMP" \
             -F "signature=$SIGNATURE" \
             -F "file=@build.tar.gz" \
+            --fail \
             http://$DEPLOY_HOST:$DEPLOY_PORT/deploy/hmac
