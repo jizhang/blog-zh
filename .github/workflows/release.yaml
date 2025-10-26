@@ -28,12 +28,9 @@ jobs:
           path: build.tar.gz
 
   deploy-mtls:
+    if: false
     needs: build
-    strategy:
-      matrix:
-        environment: []
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/download-artifact@v5
       - name: Deploy
