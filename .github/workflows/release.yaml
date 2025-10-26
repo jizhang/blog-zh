@@ -31,7 +31,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        environment: [prod-sg]
+        environment: []
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     steps:
@@ -69,7 +69,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        environment: [prod-jp, prod-hk]
+        environment: [prod-jp]
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     steps:
