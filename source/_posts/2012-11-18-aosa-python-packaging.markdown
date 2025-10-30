@@ -107,43 +107,39 @@ Building against libxml2/libxslt in the following directory: /usr/lib/lxml
 在有些项目中它甚至会执行失败，因为开发者默认为 `setup.py` 只是用来安装软件的，而其他一些 Distutils 功能只在开发过程中使用。因此，`setup.py` 的角色太多，容易引起他人的困惑。
 
 ### 14.3.2 元信息和 PyPI
-Distutils 在构建发布包时会创建一个 `Metadata` 文件。这个文件是按照 PEP314<sup>1</sup>编写的，包含了一些常见的项目信息，包括名称、版本等，主要有以下几项：
-
-* `Name`：项目名称
-* `Version`：发布版本号
-* `Summary`：项目简介
-* `Description`：项目详情
-* `Home-Page`：项目主页
-* `Author`：作者
-* `Classifers`：项目类别。Python为不同的发行协议、发布版本（beta，alpha，final）等提供了不同的类别。
-* `Requires`，`Provides`，`Obsoletes`：描述项目依赖信息
+Distutils 在构建发布包时会创建一个 `Metadata` 文件。这个文件是按照 PEP 314<sup>1</sup> 编写的，包含了一些常见的项目信息，包括名称、版本等，主要有以下几项：
+* Name: 项目名称
+* Version: 发布版本号
+* Summary: 项目简介
+* Description: 项目详情
+* Home-Page: 项目主页
+* Author: 作者
+* Classifers: 项目类别。Python为不同的发行协议、发布版本（beta, alpha, final）等提供了不同的类别。
+* Requires, Provides, Obsoletes: 描述项目依赖信息
 
 这些信息一般都能移植到其他打包系统中。
 
-Python项目索引（Python Package Index，简称PyPI<sup>2</sup>），是一个类似CPAN的中央软件包仓库，可以调用`Distutils`的`register`和`upload`命令来注册和发布项目。`register`命令会构建`Metadata`文件并传送给PyPI，让访问者和安装工具能够浏览和搜索。
+Python 项目索引（Python Package Index，简称 PyPI<sup>2</sup>），是一个类似 CPAN 的中央软件包仓库，可以调用 Distutils 的 `register` 和 `upload` 命令来注册和发布项目。`register` 命令会构建 `Metadata` 文件并传送给 PyPI，让访问者和安装工具能够浏览和搜索。
 
 ![图14.2：PyPI仓库](/images/aosa-python-packaging/pypi.png)
 
-你可以通过`Classifies`（类别）来浏览，获取项目作者的名字和主页。同时，`Requires`可以用来定义Python模块的依赖关系。`requires`选项可以向元信息文件的`Requires`字段添加信息：
-
+你可以通过 `Classifies`（类别）来浏览，获取项目作者的名字和主页。同时，`Requires` 可以用来定义 Python 模块的依赖关系。`requires` 选项可以向元信息文件的 `Requires` 字段添加信息：
 ```python
 from distutils.core import setup
 
 setup(name='foo', version='1.0', requires=['ldap'])
 ```
 
-这里声明了对`ldap`模块的依赖，这种依赖并没有实际效力，因为没有安装工具会保证这个模块真实存在。如果说Python代码中会使用类似Perl的`require`关键字来定义依赖关系，那还有些作用，因为这时安装工具会检索PyPI上的信息并进行安装，其实这也就是CPAN的做法。但是对于Python来说，`ldap`模块可以存在于任何项目之中，因为`Distutils`是允许开发者发布一个包含多个模块的软件的，所以这里的元信息字段并无太大作用。
+这里声明了对 ldap 模块的依赖，这种依赖并没有实际效力，因为没有安装工具会保证这个模块真实存在。如果说 Python 代码中会使用类似 Perl 的 `require` 关键字来定义依赖关系，那还有些作用，因为这时安装工具会检索 PyPI 上的信息并进行安装，其实这也就是 CPAN 的做法。但是对于 Python 来说，ldap 模块可以存在于任何项目之中，因为 Distutils 是允许开发者发布一个包含多个模块的软件的，所以这里的元信息字段并无太大作用。
 
-`Metadata`的另一个缺点是，因为它是由Python脚本创建的，所以会根据脚本执行环境的不同而产生特定信息。比如，运行在Windows环境下的一个项目会在`setup.py`文件中有以下描述：
-
+`Metadata` 的另一个缺点是，因为它是由 Python 脚本创建的，所以会根据脚本执行环境的不同而产生特定信息。比如，运行在 Windows 环境下的一个项目会在 `setup.py` 文件中有以下描述：
 ```python
 from distutils.core import setup
 
 setup(name='foo', version='1.0', requires=['win32com'])
 ```
 
-这样配置相当于是默认该项目只会运行在Windows环境下，即使它可能提供了跨平台的方案。一种解决方法是根据不同的平台来指定`requires`参数：
-
+这样配置相当于是默认该项目只会运行在 Windows 环境下，即使它可能提供了跨平台的方案。一种解决方法是根据不同的平台来指定 `requires` 参数：
 ```python
 from distutils.core import setup
 import sys
@@ -154,18 +150,16 @@ else:
     setup(name='foo', version='1.0')
 ```
 
-但这种做法往往会让事情更糟。要注意，这个脚本是用来将项目的源码包发布到PyPI上的，这样写就说明它向PyPI上传的`Metadata`文件会因为该脚本运行环境的不同而不同。换句话说，这使得我们无法在元信息文件中看出这个项目依赖于特定的平台。
+但这种做法往往会让事情更糟。要注意，这个脚本是用来将项目的源码包发布到 PyPI 上的，这样写就说明它向 PyPI 上传的 `Metadata` 文件会因为该脚本运行环境的不同而不同。换句话说，这使得我们无法在元信息文件中看出这个项目依赖于特定的平台。
 
 ### 14.3.3 PyPI的架构设计
 
-![图14.3 PyPI工作流](/images/aosa-python-packaging/pypi-workflow.png)
+![图14.3 PyPI 工作流](/images/aosa-python-packaging/pypi-workflow.png)
 
-如上文所述，PyPI是一个Python项目的中央仓库，人们可以通过不同的类别来搜索已有的项目，也可以创建自己的项目。人们可以上传项目源码和二进制文件，供其他人下载使用或研究。同时，PyPI还提供了相应的Web服务，让安装工具可以调用它来检索和下载文件。
+如上文所述，PyPI 是一个 Python 项目的中央仓库，人们可以通过不同的类别来搜索已有的项目，也可以创建自己的项目。人们可以上传项目源码和二进制文件，供其他人下载使用或研究。同时，PyPI 还提供了相应的 Web 服务，让安装工具可以调用它来检索和下载文件。
 
 #### 注册项目并上传发布包
-
-我们可以使用`Distutils`的`register`命令在PyPI中注册一个项目。这个命令会根据项目的元信息生成一个POST请求。该请求会包含验证信息，PyPI使用HTTP基本验证来确保所有的项目都和一个注册用户相关联。验证信息保存在`Distutils`的配置文件中，或在每次执行`register`命令时提示用户输入。以下是一个使用示例：
-
+我们可以使用 Distutils 的 `register` 命令在 PyPI 中注册一个项目。这个命令会根据项目的元信息生成一个 POST 请求。该请求会包含验证信息，PyPI 使用 HTTP 基本验证来确保所有的项目都和一个注册用户相关联。验证信息保存在 Distutils 的配置文件中，或在每次执行 `register` 命令时提示用户输入。以下是一个使用示例：
 ```bash
 $ python setup.py register
 running register
@@ -173,28 +167,25 @@ Registering MPTools to http://pypi.python.org/pypi
 Server response (200): OK
 ```
 
-每个注册项目都会产生一个HTML页面，上面包含了它的元信息。开发者可以使用`upload`命令将发布包上传至PyPI：
-
+每个注册项目都会产生一个 HTML 页面，上面包含了它的元信息。开发者可以使用 `upload` 命令将发布包上传至 PyPI：
 ```bash
 $ python setup.py sdist upload
 running sdist
-…
+...
 running upload
 Submitting dist/mopytools-0.1.tar.gz to http://pypi.python.org/pypi
 Server response (200): OK
 ```
 
-如果开发者不想将代码上传至PyPI，可以使用元信息中的`Download-URL`属性来指定一个外部链接，供用户下载。
+如果开发者不想将代码上传至 PyPI，可以使用元信息中的 `Download-URL` 属性来指定一个外部链接，供用户下载。
 
-#### 检索PyPI
+#### 检索 PyPI
+除了在页面中检索项目，PyPI 还提供了两个接口供程序调用：简单索引协议和 XML-PRC API。
 
-除了在页面中检索项目，PyPI还提供了两个接口供程序调用：简单索引协议和XML-PRC API。
-
-简单索引协议的地址是`http://pypi.python.org/simple/`，它包含了一个链接列表，指向所有的注册项目：
-
+简单索引协议的地址是 `http://pypi.python.org/simple/`，它包含了一个链接列表，指向所有的注册项目：
 ```html
 <html><head><title>Simple Index</title></head><body>
-⋮    ⋮    ⋮
+...
 <a href='MontyLingua/'>MontyLingua</a><br/>
 <a href='mootiro_web/'>mootiro_web</a><br/>
 <a href='Mopidy/'>Mopidy</a><br/>
@@ -204,18 +195,16 @@ Server response (200): OK
 <a href='morbid/'>morbid</a><br/>
 <a href='Morelia/'>Morelia</a><br/>
 <a href='morse/'>morse</a><br/>
-⋮    ⋮    ⋮
+...
 </body></html>
 ```
 
-如MPTools项目对应的`MPTools/`目录，它所指向的路径会包含以下内容：
-
+如 MPTools 项目对应的 `MPTools/` 目录，它所指向的路径会包含以下内容：
 * 所有发布包的地址
-* 在`Metadata`中定义的项目网站地址，包含所有版本
+* 在 `Metadata` 中定义的项目网站地址，包含所有版本
 * 下载地址（`Download-URL`），同样包含所有版本
 
-以MPTools项目为例：
-
+以 MPTools 项目为例：
 ```html
 <html><head><title>Links for MPTools</title></head>
 <body><h1>Links for MPTools</h1>
@@ -224,14 +213,13 @@ Server response (200): OK
 </body></html>
 ```
 
-安装工具可以通过访问这个索引来查找项目的发布包，或者检查`http://pypi.python.org/simple/PROJECT_NAME/`是否存在。
+安装工具可以通过访问这个索引来查找项目的发布包，或者检查 `http://pypi.python.org/simple/PROJECT_NAME/` 是否存在。
 
-但是，这个协议主要有两个缺陷。首先，PyPI目前还是单台服务器。虽然很多用户会自己搭建镜像，但过去两年中曾发生过几次PyPI无法访问的情况，用户无法下载依赖包，导致项目构建出现问题。比如说，在构建一个Plone项目时，需要向PyPI发送近百次请求。所以PyPI在这里成为了单点故障。
+但是，这个协议主要有两个缺陷。首先，PyPI 目前还是单台服务器。虽然很多用户会自己搭建镜像，但过去两年中曾发生过几次 PyPI 无法访问的情况，用户无法下载依赖包，导致项目构建出现问题。比如说，在构建一个 Plone 项目时，需要向 PyPI 发送近百次请求。所以 PyPI 在这里成为了单点故障。
 
-其次，当项目的发布包没有保存在PyPI中，而是通过`Download-URL`指向了其他地址，安装工具就需要重定向到这个地址下载发布包。这种情况也会增加安装过程的不稳定性。
+其次，当项目的发布包没有保存在 PyPI 中，而是通过 `Download-URL` 指向了其他地址，安装工具就需要重定向到这个地址下载发布包。这种情况也会增加安装过程的不稳定性。
 
-简单索引协议只是提供给安装工具一个项目列表，并不包含项目元信息。可以通过PyPI的XML-RPC API来获取项目元信息：
-
+简单索引协议只是提供给安装工具一个项目列表，并不包含项目元信息。可以通过 PyPI 的 XML-RPC API 来获取项目元信息：
 ```python
 >>> import xmlrpclib
 >>> import pprint
@@ -240,143 +228,127 @@ Server response (200): OK
 ['0.1']
 >>> pprint.pprint(client.release_urls('MPTools', '0.1'))
 [{'comment_text': &rquot;,
-'downloads': 28,
-'filename': 'MPTools-0.1.tar.gz',
-'has_sig': False,
-'md5_digest': '6b06752d62c4bffe1fb65cd5c9b7111a',
-'packagetype': 'sdist',
-'python_version': 'source',
-'size': 3684,
-'upload_time': <DateTime '20110204T09:37:12' at f4da28>,
-'url': 'http://pypi.python.org/packages/source/M/MPTools/MPTools-0.1.tar.gz'}]
+  'downloads': 28,
+  'filename': 'MPTools-0.1.tar.gz',
+  'has_sig': False,
+  'md5_digest': '6b06752d62c4bffe1fb65cd5c9b7111a',
+  'packagetype': 'sdist',
+  'python_version': 'source',
+  'size': 3684,
+  'upload_time': <DateTime '20110204T09:37:12' at f4da28>,
+  'url': 'http://pypi.python.org/packages/source/M/MPTools/MPTools-0.1.tar.gz'}]
 >>> pprint.pprint(client.release_data('MPTools', '0.1'))
 {'author': 'Tarek Ziade',
-'author_email': 'tarek@mozilla.com',
-'classifiers': [],
-'description': 'UNKNOWN',
-'download_url': 'UNKNOWN',
-'home_page': 'http://bitbucket.org/tarek/mopytools',
-'keywords': None,
-'license': 'UNKNOWN',
-'maintainer': None,
-'maintainer_email': None,
-'name': 'MPTools',
-'package_url': 'http://pypi.python.org/pypi/MPTools',
-'platform': 'UNKNOWN',
-'release_url': 'http://pypi.python.org/pypi/MPTools/0.1',
-'requires_python': None,
-'stable_version': None,
-'summary': 'Set of tools to build Mozilla Services apps',
-'version': '0.1'}
+ 'author_email': 'tarek@mozilla.com',
+ 'classifiers': [],
+ 'description': 'UNKNOWN',
+ 'download_url': 'UNKNOWN',
+ 'home_page': 'http://bitbucket.org/tarek/mopytools',
+ 'keywords': None,
+ 'license': 'UNKNOWN',
+ 'maintainer': None,
+ 'maintainer_email': None,
+ 'name': 'MPTools',
+ 'package_url': 'http://pypi.python.org/pypi/MPTools',
+ 'platform': 'UNKNOWN',
+ 'release_url': 'http://pypi.python.org/pypi/MPTools/0.1',
+ 'requires_python': None,
+ 'stable_version': None,
+ 'summary': 'Set of tools to build Mozilla Services apps',
+ 'version': '0.1'}
 ```
 
-这种方式的问题在于，项目元信息原本就能以静态文件的方式在简单索引协议中提供，这样可以简化安装工具的复杂性，也可以减少PyPI服务的请求数。对于诸如下载数量这样的动态数据，可以在其他接口中提供。用两种服务来获取所有的静态内容，显然不太合理。
+这种方式的问题在于，项目元信息原本就能以静态文件的方式在简单索引协议中提供，这样可以简化安装工具的复杂性，也可以减少 PyPI 服务的请求数。对于诸如下载数量这样的动态数据，可以在其他接口中提供。用两种服务来获取所有的静态内容，显然不太合理。
 
-### 14.3.4 Python安装目录的结构
+### 14.3.4 Python 安装目录的结构
+在使用 `python setup.py install` 安装一个 Python 项目后，Distutils 这一 Python 核心类库会负责将程序代码复制到目标系统的相应位置。
+* **Python包**和模块会被安装到 Python 解释器程序所在的目录中，并随解释器启动：Ubuntu 系统中会安装到 `/usr/local/lib/python2.6/dist-packages/`，Fedora 则是 `/usr/local/lib/python2.6/sites-packages/`。
+* 项目中的**数据文件**可以被安装到任何位置。
+* **可执行文件**会被安装到系统的 `bin` 目录下，依平台类型而定，可能是 `/usr/local/bin`，或是其它指定的目录。
 
-在使用`python setup.py install`安装一个Python项目后，`Distutils`这一Python核心类库会负责将程序代码复制到目标系统的相应位置。
+从 Python2.5 开始，项目的元信息文件会随模块和包一起发布，名称为 `project-version.egg-info`。比如，virtualenv 项目会有一个 `virtualenv-1.4.9.egg-info` 文件。这些元信息文件可以被视为一个已安装项目的数据库，因为可以通过遍历其中的内容来获取已安装的项目和版本。但是，Distutils 并没有记录项目所安装的文件列表，也就是说，我们无法彻底删除安装某个项目后产生的所有文件。可惜的是，`install`命令本身是提供了一个名为 `--record` 的参数的，可以将已安装的文件列表记录在文本文件中，但是这个参数并没有默认开启，而且 Distutils 的文档中几乎没有提及这个参数。
 
-* *Python包* 和模块会被安装到Python解释器程序所在的目录中，并随解释器启动：Ubuntu系统中会安装到`/usr/local/lib/python2.6/dist-packages/`，Fedora则是`/usr/local/lib/python2.6/sites-packages/`。
-* 项目中的 *数据文件* 可以被安装到任何位置。
-* *可执行文件* 会被安装到系统的`bin`目录下，依平台类型而定，可能是`/usr/local/bin`，或是其它指定的目录。
-
-从Python2.5开始，项目的元信息文件会随模块和包一起发布，名称为`project-version.egg-info`。比如，`virtualenv`项目会有一个`virtualenv-1.4.9.egg-info`文件。这些元信息文件可以被视为一个已安装项目的数据库，因为可以通过遍历其中的内容来获取已安装的项目和版本。但是，`Distutils`并没有记录项目所安装的文件列表，也就是说，我们无法彻底删除安装某个项目后产生的所有文件。可惜的是，`install`命令本身是提供了一个名为`--record`的参数的，可以将已安装的文件列表记录在文本文件中，但是这个参数并没有默认开启，而且`Distutils`的文档中几乎没有提及这个参数。
-
-### 14.3.5 Setuptools、Pip等工具
-
-正如介绍中所提到的，有些项目已经在尝试修复`Distutils`的问题，并取得了一些成功。
+### 14.3.5 Setuptools、Pip 等工具
+正如介绍中所提到的，有些项目已经在尝试修复 Distutils 的问题，并取得了一些成功。
 
 #### 依赖问题
+PyPI 允许开发者在发布的项目中包含多个模块，还允许项目通过定义 `Require` 属性来声明模块级别的依赖。这两种做法都是合理的，但是同时使用就会很糟糕。
 
-PyPI允许开发者在发布的项目中包含多个模块，还允许项目通过定义`Require`属性来声明模块级别的依赖。这两种做法都是合理的，但是同时使用就会很糟糕。
+正确的做法应该是定义项目级别的依赖，这也是 Setuptools 在 Distutils 之上附加的一个特性。它还提供了一个名为 `easy_install` 的脚本来从 PyPI 上自动获取和安装依赖项。在实际生产中，模块级别的依赖并没有真正被使用，更多人倾向于使用 Setuptools。然而，这些特性只是针对 Setuptools 的，并没有被 Distutils 或 PyPI 所接受，所以 Setuptools 实质上是一个构建在错误设计上的仿冒品。
 
-正确的做法应该是定义项目级别的依赖，这也是`Setuptools`在`Distutils`之上附加的一个特性。它还提供了一个名为`easy_install`的脚本来从PyPI上自动获取和安装依赖项。在实际生产中，模块级别的依赖并没有真正被使用，更多人倾向于使用`Setuptools`。然而，这些特性只是针对`Setuptools`的，并没有被`Distutils`或PyPI所接受，所以`Setuptools`实质上是一个构建在错误设计上的仿冒品。
+`easy_install` 需要下载项目的压缩文档，执行 `setup.py` 来获取元信息，并对每个依赖项进行相同的操作。项目的依赖树会随着软件包的下载逐步勾画出来。
 
-`easy_install`需要下载项目的压缩文档，执行`setup.py`来获取元信息，并对每个依赖项进行相同的操作。项目的依赖树会随着软件包的下载逐步勾画出来。
-
-虽然PyPI上可以直接浏览项目元信息，但是`easy_install`还是需要下载所有的软件包，因为上文提到过，PyPI上的项目元信息很可能和上传时所使用的平台有关，从而和目标系统有所差异。但是这种一次性安装项目依赖的做法已经能够解决90%的问题了，的确是个很不错的特性。这也是为什么`Setuptools`被广泛采用的原因。然而，它还是有以下一些问题：
-
+虽然 PyPI 上可以直接浏览项目元信息，但是 `easy_install` 还是需要下载所有的软件包，因为上文提到过，PyPI 上的项目元信息很可能和上传时所使用的平台有关，从而和目标系统有所差异。但是这种一次性安装项目依赖的做法已经能够解决 90% 的问题了，的确是个很不错的特性。这也是为什么 Setuptools 被广泛采用的原因。然而，它还是有以下一些问题：
 * 如果某一个依赖项安装失败，它并没有提供回滚的选项，因此系统会处于一个不可用的状态。
 * 项目依赖树是在安装一个个软件包时构建出来的，因此当其中两个依赖项产生冲突时，系统也会变的不可用。
 
 #### 卸载的问题
-
-虽然`Setuptools`可以在元信息中记录已安装的文件，但它并没有提供卸载功能。另一个工具`Pip`，它通过扩展`Setuptools`的元信息来记录已安装的文件，从而能够进行卸载操作。但是，这组信息又是一种自定义的内容，因此一个Python项目很可能包含四种不同的元信息：
-
-* `Distutils`的`egg-info`，一个单一的文件；
-* `Setuptools`的`egg-info`，一个目录，记录了`Setuptools`特定的元信息；
-* `Pip`的`egg-info`，是后者的扩展；
+虽然 Setuptools 可以在元信息中记录已安装的文件，但它并没有提供卸载功能。另一个工具 Pip，它通过扩展 Setuptools 的元信息来记录已安装的文件，从而能够进行卸载操作。但是，这组信息又是一种自定义的内容，因此一个 Python 项目很可能包含四种不同的元信息：
+* Distutils 的 `egg-info`，一个单一的文件；
+* Setuptools 的 `egg-info`，一个目录，记录了 Setuptools 特定的元信息；
+* Pip 的 `egg-info`，是后者的扩展；
 * 其它由打包系统产生的信息。
 
 ### 14.3.6 数据文件如何处理？
-
-在`Distutils`中，数据文件可以被安装在任意位置。你可以像这样在`setup.py`中定义一个项目的数据文件：
-
+在 Distutils 中，数据文件可以被安装在任意位置。你可以像这样在 `setup.py` 中定义一个项目的数据文件：
 ```python
-setup(…,
+setup(
+  ...,
   packages=['mypkg'],
   package_dir={'mypkg': 'src/mypkg'},
   package_data={'mypkg': ['data/*.dat']},
-  )
+)
 ```
 
-那么，`mypkg`项目中所有以`.dat`为扩展名的文件都会被包含在发布包中，并随Python代码安装到目标系统。
+那么，mypkg 项目中所有以 `.dat` 为扩展名的文件都会被包含在发布包中，并随 Python 代码安装到目标系统。
 
 对于需要安装到项目目录之外的数据文件，可以进行如下配置。他们随项目一起打包，并安装到指定的目录中：
-
 ```python
-setup(…,
+setup(
+    ...,
     data_files=[('bitmaps', ['bm/b1.gif', 'bm/b2.gif']),
                 ('config', ['cfg/data.cfg']),
                 ('/etc/init.d', ['init-script'])]
-    )
+)
 ```
 
 这对系统打包人员来说简直是噩梦：
-
-* 元信息中并不包含数据文件的信息，因此打包人员需要阅读`setup.py`文件，甚至是研究项目源码来获取这些信息。
+* 元信息中并不包含数据文件的信息，因此打包人员需要阅读 `setup.py` 文件，甚至是研究项目源码来获取这些信息。
 * 不应该由开发人员来决定项目数据文件应该安装到目标系统的哪个位置。
 * 数据文件没有区分类型，图片、帮助文件等都被视为同等来处理。
 
-打包人员在对项目进行打包时只能去根据目标系统的情况来修改`setup.py`文件，从而让软件包能够顺利安装。要做到这一点，他就需要阅读程序代码，修改所有用到这些文件的地方。`Setuptools`和`Pip`并没有解决这一问题。
+打包人员在对项目进行打包时只能去根据目标系统的情况来修改 `setup.py` 文件，从而让软件包能够顺利安装。要做到这一点，他就需要阅读程序代码，修改所有用到这些文件的地方。Setuptools 和 Pip 并没有解决这一问题。
 
 ## 14.4 改进标准
 所以最后我们得到的是这样一个打包系统：所有功能都由一个模块提供，项目的元信息不完整，无法描述清楚项目中包含的所有内容。现在就让我们来做些改进。
 
 ### 14.4.1 元信息
-
-首先，我们要修正`Metadata`标准中的内容。PEP 345定义了一个新的标准，它包含以下内容：
-
+首先，我们要修正 `Metadata` 标准中的内容。PEP 345 定义了一个新的标准，它包含以下内容：
 * 更合理的版本定义方式
 * 项目级别的依赖关系
 * 使用一种静态的方式描述平台相关的属性
 
 #### 版本
+元信息标准的目标之一是能够让 Python 包管理工具使用相同的方式来对项目进行分类。对于版本号来说，应该让所有的工具都知道“1.1”是在“1.0”之后的。如果项目使用了自己定义的版本号命名方式，就无法做到这一点了。
 
-元信息标准的目标之一是能够让Python包管理工具使用相同的方式来对项目进行分类。对于版本号来说，应该让所有的工具都知道“1.1”是在“1.0”之后的。如果项目使用了自己定义的版本号命名方式，就无法做到这一点了。
-
-要保证这种一致性，唯一的方法是让所有的项目都按照统一的方式来命名版本号。我们选择的方式是经典的序列版本号，在PEP 386中定义，它的格式是：
-
+要保证这种一致性，唯一的方法是让所有的项目都按照统一的方式来命名版本号。我们选择的方式是经典的序列版本号，在 PEP 386 中定义，它的格式是：
 ```
 N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
 ```
 
 其中：
-
-* *N* 是一个整数。你可以使用任意数量的N，用点号将它们分隔开来。但至少要有两个N，即“主版本.次版本”。
-* *a, b, c* 分别是 *alpha, beta, release candidate* 的简写，它们后面还有一个整数。预发布版本有两种标记，c和rc，主要是为了和过去兼容，但c更简单些。
+* *N* 是一个整数。你可以使用任意数量的 N，用点号将它们分隔开来。但至少要有两个 N，即“主版本.次版本”。
+* *a*, *b*, *c* 分别是 *alpha*, *beta*, *release candidate* 的简写，它们后面还有一个整数。预发布版本有两种标记，*c* 和 *rc*，主要是为了和过去兼容，但 *c* 更简单些。
 * *dev* 加一个数字表示开发版本。
 * *post* 加一个数字表示已发布版本。
 
 根据项目发布周期的不同，开发版本和已发布版本可以作为两个最终版本之间的过渡版本号。大多数项目会使用开发版本。
 
-按照这个形式，PEP 386定义了严格的顺序：
-
+按照这个形式，PEP 386 定义了严格的顺序：
 * alpha < beta < rc < final
-* dev < non-dev < post, non-dev包括alpha, beta, rc或者final
+* dev < non-dev < post; non-dev 包括 alpha, beta, rc 或者 final
 
 以下是一个完整的示例：
-
 ```
 1.0a1 < 1.0a2.dev456 < 1.0a2 < 1.0a2.1.dev456
   < 1.0a2.1 < 1.0b1.dev456 < 1.0b2 < 1.0b2.post345
@@ -384,36 +356,30 @@ N.N[.N]+[{a|b|c|rc}N[.N]+][.postN][.devN]
       < 1.0.post456.dev34 < 1.0.post456
 ```
 
-这样定义的目标在于让其他打包系统能够将Python项目的版本号方便地转换成它们自己的版本命名规则。目前，如果上传的项目使用了PEP 345定义的元信息，PyPI会拒绝接受没有遵守PEP 386版本号命名规范的项目。
+这样定义的目标在于让其他打包系统能够将 Python 项目的版本号方便地转换成它们自己的版本命名规则。目前，如果上传的项目使用了 PEP 345 定义的元信息，PyPI 会拒绝接受没有遵守 PEP 386 版本号命名规范的项目。
 
 #### 依赖
+PEP 345 定义了三个新的元信息属性，用来替换 PEP 314 中的 `Requires`、`Provides` 和 `Obsoletes`，它们是 `Requires-Dist`、`Provides-Dist`、`Obsoletes-Dist`。这些属性可以在元信息中出现多次。
 
-PEP 345定义了三个新的元信息属性，用来替换PEP 314中的`Requires`，`Provides`，和`Obsoletes`，它们是`Requires-Dist`，`Provides-Dist`，`Obsoletes-Dist`。这些属性可以在元信息中出现多次。
-
-`Requires-Dist`中定义了项目所依赖的软件包，使用依赖项目的`Name`元信息，并可以跟上一个版本号。这些依赖项目的名称必须能在PyPI中找到，且版本号命名规则要遵守PEP 386中的定义。以下是一些示例：
-
+`Requires-Dist` 中定义了项目所依赖的软件包，使用依赖项目的 `Name` 元信息，并可以跟上一个版本号。这些依赖项目的名称必须能在 PyPI 中找到，且版本号命名规则要遵守 PEP 386 中的定义。以下是一些示例：
 ```
 Requires-Dist: pkginfo
 Requires-Dist: PasteDeploy
 Requires-Dist: zope.interface (>3.5.0)
 ```
 
-`Provides-Dist`用来定义项目中包含的其他项目，常用于合并两个项目的情形。比如，ZODB项目可以包含名为`transaction`的项目，并声明：
-
+`Provides-Dist` 用来定义项目中包含的其他项目，常用于合并两个项目的情形。比如，ZODB 项目可以包含名为 transaction 的项目，并声明：
 ```
 Provides-Dist: transaction
 ```
 
-`Obsoletes-Dist`主要用于将其它项目标记为本项目的过期版本。
-
+`Obsoletes-Dist` 主要用于将其它项目标记为本项目的过期版本。
 ```
 ObsoletesDist: OldName
 ```
 
 #### 环境标识
-
 环境标识可以添加在上述三个属性的后面，使用分号分隔，用来标识该属性在什么样的目标环境中生效。以下是一些示例：
-
 ```
 Requires-Dist: pywin32 (>1.0); sys.platform == 'win32'
 Obsoletes-Dist: pywin31; sys.platform == 'win32'
@@ -422,8 +388,7 @@ Requires-Dist: bar; python_version == '2.4' or python_version == '2.5'
 Requires-External: libxslt; 'linux' in sys.platform
 ```
 
-这种简易的语法足以让非Python程序员看懂：它使用`==`或`in`运算符（含`!=`和`not in`），且可以通过逻辑运算符连接。PEP 345中规定以下属性可以使用这种语法：
-
+这种简易的语法足以让非 Python 程序员看懂：它使用 `==` 或 `in` 运算符（含 `!=` 和 `not in`），且可以通过逻辑运算符连接。PEP 345 中规定以下属性可以使用这种语法：
 * `Requires-Python`
 * `Requires-External`
 * `Requires-Dist`
@@ -432,36 +397,31 @@ Requires-External: libxslt; 'linux' in sys.platform
 * `Classifier`
 
 ### 14.4.2 用户安装了什么？
+出于互通性的考虑，Python 项目的安装格式必须一致。要让安装工具A能够检测到工具B安装的项目，它们就必须共享和更新相同的项目列表。
 
-出于互通性的考虑，Python项目的安装格式必须一致。要让安装工具A能够检测到工具B安装的项目，它们就必须共享和更新相同的项目列表。
+当然，理想中用户会在系统中只使用一种安装工具，但是他们也许会需要迁移到另一种工具以获得一些新的特性。比如，Mac OS X 操作系统自带了 Setuptools，因而装有 `easy_install` 工具。当他们想要切换到新的工具时，该工具就必须兼容现有的环境。
 
-当然，理想中用户会在系统中只使用一种安装工具，但是他们也许会需要迁移到另一种工具以获得一些新的特性。比如，Mac OS X操作系统自带了`Setuptools`，因而装有`easy_install`工具。当他们想要切换到新的工具时，该工具就必须兼容现有的环境。
+如果系统使用类似 RPM 这样的工具管理 Python 软件包，那么其它安装工具在安装新项目时是无法通知到系统的。更糟糕的是，即便 Python 安装工具能够通知到中央打包系统，我们也必须在 Python 元信息和系统元信息之间做一个映射。比如，项目的名称在两个系统中可能是不一致的。造成这种问题的原因也多种多样，比较常见的原因是命名冲突，即 RPM 源中已经有一个同名的项目了。另一个原因是项目名称中包含了 python 这个前缀，从而破坏了 RPM 系统的规范。比如，你的项目名称是 foo-python，那在 RPM 源中很可能被表示为 python-foo。
 
-如果系统使用类似RPM这样的工具管理Python软件包，那么其它安装工具在安装新项目时是无法通知到系统的。更糟糕的是，即便Python安装工具能够通知到中央打包系统，我们也必须在Python元信息和系统元信息之间做一个映射。比如，项目的名称在两个系统中可能是不一致的。造成这种问题的原因也多种多样，比较常见的原因是命名冲突，即RPM源中已经有一个同名的项目了。另一个原因是项目名称中包含了`python`这个前缀，从而破坏了RPM系统的规范。比如，你的项目名称是`foo-python`，那在RPM源中很可能被表示为`python-foo`。
+一种解决办法是不去触碰全局的 Python 环境，而是使用一个隔离的环境，如 Virtualenv。
 
-一种解决办法是不去触碰全局的Python环境，而是使用一个隔离的环境，如`Virtualenv`。
+但不管怎样，采用统一的 Python 安装格式还是有必要的，因为其它一些打包系统在为自己安装 Python 项目时还是需要考虑互通性。当第三方打包系统新安装了一个项目，并在自身的数据库中注册后，它还需要为 Python 安装环境生成一个正确的元信息，从而让项目在这个环境中变得可见，或能通过该 Python 环境提供的 API 检索到。
 
-但不管怎样，采用统一的Python安装格式还是有必要的，因为其它一些打包系统在为自己安装Python项目时还是需要考虑互通性。当第三方打包系统新安装了一个项目，并在自身的数据库中注册后，它还需要为Python安装环境生成一个正确的元信息，从而让项目在这个环境中变得可见，或能通过该Python环境提供的API检索到。
+元信息的映射问题可以这样描述：因为 RPM 系统知道自己安装了哪些 Python 项目，它就能生成合适的 Python 元信息。例如，它知道 python26-webob 项目在 PyPI 中的名字是 WebOb。
 
-元信息的映射问题可以这样描述：因为RPM系统知道自己安装了哪些Python项目，它就能生成合适的Python元信息。例如，它知道`python26-webob`项目在PyPI中的名字是`WebOb`。
-
-回到我们的规范：PEP 376定义的项目安装规范和`Seteptools`以及`Pip`的格式很相似，它是一个以`dist-info`结尾的目录，包含以下内容：
-
-* `METADATA`：元信息，其格式在PEP 345、PEP 314和PEP 241中描述。
-* `RECORD`：项目安装的文件列表，以类似csv的格式保存。
+回到我们的规范：PEP 376 定义的项目安装规范和 Seteptools 以及 Pip 的格式很相似，它是一个以 `dist-info` 结尾的目录，包含以下内容：
+* `METADATA`：元信息，其格式在 PEP 345、PEP 314 和 PEP 241 中描述。
+* `RECORD`：项目安装的文件列表，以类似 csv 的格式保存。
 * `INSTALLER`：安装项目所使用的工具。
 * `REQUESTED`：如果这个文件存在，则表明这个项目是被显式安装的，即并不是作为依赖项而安装。
 
-如果所有的安装工具都能识别这种格式，我们在管理Python项目时就不需要依赖特定的安装工具和它提供的特性了。此外，PEP 376将元信息设计为一个目录，这样就能方便地扩展。事实上，下一章要描述的`RESOURCES`文件很可能会在不久的将来添加到元信息中，而不用改变PEP 376标准。当事实证明这个文件能被所有的安装工具使用，则会将它修订到PEP中。
+如果所有的安装工具都能识别这种格式，我们在管理 Python 项目时就不需要依赖特定的安装工具和它提供的特性了。此外，PEP 376 将元信息设计为一个目录，这样就能方便地扩展。事实上，下一章要描述的 `RESOURCES` 文件很可能会在不久的将来添加到元信息中，而不用改变 PEP 376 标准。当事实证明这个文件能被所有的安装工具使用，则会将它修订到 PEP 中。
 
 ### 14.4.3 数据文件的结构
-
 前面已经提到，我们需要能够让打包者来决定项目的数据文件安装在哪个位置，而不用修改代码。同样，也要能够让开发者在开发时不用去考虑数据文件的存放位置。我们的解决方案很普通：重定向。
 
 #### 使用数据文件
-
-假设你的`MPTools`项目需要使用一个配置文件。开发者会将改文件放到Python包安装目录中，并使用`__file__`去引用：
-
+假设你的 MPTools 项目需要使用一个配置文件。开发者会将改文件放到 Python 包安装目录中，并使用 `__file__` 去引用：
 ```python
 import os
 
@@ -469,10 +429,9 @@ here = os.path.dirname(__file__)
 cfg = open(os.path.join(here, 'config', 'mopy.cfg'))
 ```
 
-这样编写代码意味着该配置文件必须和代码放在相同的位置，一个名为`config`的子目录下。
+这样编写代码意味着该配置文件必须和代码放在相同的位置，一个名为 `config` 的子目录下。
 
-我们设计的新的数据文件结构以项目为根节点，开发者可以定义任意的文件目录结构，而不用关心根目录是存放在软件安装目录中或是其它目录。开发者可以使用`pkgutil.open`来访问这些数据文件：
-
+我们设计的新的数据文件结构以项目为根节点，开发者可以定义任意的文件目录结构，而不用关心根目录是存放在软件安装目录中或是其它目录。开发者可以使用 `pkgutil.open` 来访问这些数据文件：
 ```python
 import os
 import pkgutil
@@ -481,22 +440,19 @@ import pkgutil
 cfg = pkgutil.open('MPTools', 'config/mopy.cfg')
 ```
 
-`pkgutil.open`命令会检索项目元信息中的`RESOURCES`文件，该文件保存的是一个简单的映射信息——文件名称和它所存放的位置：
-
+`pkgutil.open` 命令会检索项目元信息中的 `RESOURCES` 文件，该文件保存的是一个简单的映射信息——文件名称和它所存放的位置：
 ```
 config/mopy.cfg {confdir}/{distribution.name}
 ```
 
-其中，`{confdir}`变量指向系统的配置文件目录，`{distribution.name}`变量表示的是Python项目名称。
+其中，`{confdir}` 变量指向系统的配置文件目录，`{distribution.name}` 变量表示的是 Python 项目名称。
 
 ![图14.4：定位一个文件](/images/aosa-python-packaging/find-file.png)
 
-只要安装过程中生成了`RESOURCES`文件，这个API就能帮助开发者找到`mopy.cfg`文件。又因为`config/mopy.cfg`是一个相对于项目的路径，我们就能在开发模式下提供一个本地的路径，让`pkgutil`能够找到它。
+只要安装过程中生成了 `RESOURCES` 文件，这个 API 就能帮助开发者找到 `mopy.cfg` 文件。又因为 `config/mopy.cfg` 是一个相对于项目的路径，我们就能在开发模式下提供一个本地的路径，让 `pkgutil` 能够找到它。
 
 #### 声明数据文件
-
-实际使用中，我们可以在`setup.cfg`文件中用映射关系来定义数据文件的存放位置。映射关系的形式是`(glob-style pattern, target)`，每个“模式”指向项目中的一个或一组文件，“目标”则表示实际安装位置，可以包含变量名，用花括号括起。例如，`MPTools`的`setup.cfg`文件可以是以下内容：
-
+实际使用中，我们可以在 `setup.cfg` 文件中用映射关系来定义数据文件的存放位置。映射关系的形式是 `(glob-style pattern, target)`，每个“模式”指向项目中的一个或一组文件，“目标”则表示实际安装位置，可以包含变量名，用花括号括起。例如，MPTools 的 `setup.cfg` 文件可以是以下内容：
 ```
 [files]
 resources =
@@ -504,64 +460,57 @@ resources =
         images/*.jpg    {datadir}/{application.name}/
 ```
 
-`sysconfig`模块提供了一组可用的变量，并为不同的操作系统提供了默认值。例如，`{confdir}`在Linux下是`/etc`。安装工具就能结合`sysconfig`模块来决定数据文件的存放位置。最后，它会生成一个`RESOURCES`文件，这样`pkgutil`就能找到这些文件了：
+`sysconfig` 模块提供了一组可用的变量，并为不同的操作系统提供了默认值。例如，`{confdir}` 在 Linux 下是 `/etc`。安装工具就能结合 `sysconfig` 模块来决定数据文件的存放位置。最后，它会生成一个 `RESOURCES` 文件，这样 `pkgutil` 就能找到这些文件了：
 
 ![图14.5：安装工具](/images/aosa-python-packaging/installer.png)
 
-### 14.4.4 改进PypI
-
-上文提到过，PyPI目前是一个单点故障源。PEP 380中正式提出了这个问题，并定义了一个镜像协议，使得用户可以在PyPI出现问题时连接到其他源。这个协议的目的是让社区成员可以在世界各地搭建起PyPI镜像。
+### 14.4.4 改进 PypI
+上文提到过，PyPI 目前是一个单点故障源。PEP 380 中正式提出了这个问题，并定义了一个镜像协议，使得用户可以在 PyPI 出现问题时连接到其他源。这个协议的目的是让社区成员可以在世界各地搭建起 PyPI 镜像。
 
 ![图14.6：镜像](/images/aosa-python-packaging/mirroring.png)
 
-镜像列表的格式是`X.pypi.python.org`，其中`X`是一个字母序列，如`a,b,c,…,aa,ab,….`，`a.pypi.python.org`是主服务器，b字母开始是从服务器。域名`last.pypi.python.org`的A记录指向这个列表中的最后一个服务器，这样PyPI的使用者就能够根据DNS记录来获取完整的服务器镜像列表了。
+镜像列表的格式是 `X.pypi.python.org`，其中 `X` 是一个字母序列，如 `a,b,c,...,aa,ab,...`，`a.pypi.python.org`是主服务器，`b` 字母开始是从服务器。域名 `last.pypi.python.org` 的A记录指向这个列表中的最后一个服务器，这样 PyPI 的使用者就能够根据 DNS 记录来获取完整的服务器镜像列表了。
 
-比如，以下代码获取到的最后一个镜像地址是`h.pypi.python.org`，表示当前PyPI有7个镜像服务器（b至h）：
-
+比如，以下代码获取到的最后一个镜像地址是 `h.pypi.python.org`，表示当前 PyPI 有 7 个镜像服务器（`b` 至 `h`）：
 ```python
 >>> import socket
 >>> socket.gethostbyname_ex('last.pypi.python.org')[0]
 'h.pypi.python.org'
 ```
 
-这样一来，客户端还可以根据域名的IP地址来决定连接最近的镜像服务器，或者在服务器发生故障时自动重连到新的地址。镜像协议本身要比rsync更复杂一些，因为我们需要保证下载统计量的准确性，并提供最基本的安全性保障。
+这样一来，客户端还可以根据域名的 IP 地址来决定连接最近的镜像服务器，或者在服务器发生故障时自动重连到新的地址。镜像协议本身要比 `rsync` 更复杂一些，因为我们需要保证下载统计量的准确性，并提供最基本的安全性保障。
 
 #### 同步
+镜像必须尽可能降低和主服务器之间的数据交换，要达到这个目的，就必须在 PyPI 的 XML-RPC 接口中加入 `changelog` 信息，以保证只获取变化的内容。对于每个软件包“P”，镜像必须复制 `/simple/P/` 和 `/serversig/P` 这两组信息。
 
-镜像必须尽可能降低和主服务器之间的数据交换，要达到这个目的，就必须在PyPI的XML-RPC接口中加入`changelog`信息，以保证只获取变化的内容。对于每个软件包“P”，镜像必须复制`/simple/P/`和`/serversig/P`这两组信息。
-
-如果中央服务器中删除了一个软件包，它就必须删除所有和它有关的数据。为了检测软件包文件的变动，可以缓存文件的ETag信息，并通过`If-None-Match`头来判断是否可以跳过传输过程。当同步完成后，镜像就将`/last-modified`文件设置为当前的时间。
+如果中央服务器中删除了一个软件包，它就必须删除所有和它有关的数据。为了检测软件包文件的变动，可以缓存文件的 ETag 信息，并通过 `If-None-Match` 头来判断是否可以跳过传输过程。当同步完成后，镜像就将 `/last-modified` 文件设置为当前的时间。
 
 #### 统计信息
-
 当用户在镜像中下载一个软件包时，镜像就需要将这个事件报告给中央服务器，继而广播给其他镜像服务器。这样就能保证下载工具在任意镜像都能获得正确的下载量统计信息。
 
-统计信息以CSV文件的格式保存在中央服务器的`stats`目录中，按照日和周分隔。每个镜像服务器需要提供一个`local-stats`目录来存放它自己的统计信息。文件中保存了每个软件包的下载数量，以及它们的下载工具。中央服务器每天都会从镜像服务器中获取这些信息，将其合并到全局的`stats`目录，这样就能保证镜像服务器中的`local-stats`目录中的数据至少是每日更新的。
+统计信息以 CSV 文件的格式保存在中央服务器的 `stats` 目录中，按照日和周分隔。每个镜像服务器需要提供一个 `local-stats` 目录来存放它自己的统计信息。文件中保存了每个软件包的下载数量，以及它们的下载工具。中央服务器每天都会从镜像服务器中获取这些信息，将其合并到全局的 `stats` 目录，这样就能保证镜像服务器中的 `local-stats` 目录中的数据至少是每日更新的。
 
 #### 镜像服务器的合法性
-
 在分布式的镜像系统中，客户端需要能够验证镜像服务器的合法性。如果不这样做，就可能产生以下威胁：
-
 * 中央索引发生错误
 * 镜像服务被篡改
 * 服务器和客户端之间遭到拦截攻击
 
 对于第一种攻击，软件包的作者就需要使用自己的PGP密钥来对软件包进行加密，这样其他用户就能判断他所下载的软件包是来自可信任的作者的。镜像服务协议中只对第二种攻击做了预防，不过有些措施也可以预防拦截攻击。
 
-中央服务器会在`/serverkey`这个URL下提供一个DSA密钥，它是用`opensll dsa-pubout`<sup>3</sup>生成的PEM格式的密钥。这个URL不能被镜像服务器收录，客户端必须从主服务器中获取这个serverkey密钥，或者使用PyPI客户端本身自带的密钥。镜像服务器也是需要下载这个密钥的，用来检测密钥是否有更新。
+中央服务器会在 `/serverkey` 这个 URL 下提供一个 DSA 密钥，它是用`opensll dsa-pubout`<sup>3</sup> 生成的 PEM 格式的密钥。这个 URL 不能被镜像服务器收录，客户端必须从主服务器中获取这个 serverkey 密钥，或者使用 PyPI 客户端本身自带的密钥。镜像服务器也是需要下载这个密钥的，用来检测密钥是否有更新。
 
-对于每个软件包，`/serversig/package`中存放了它们的镜像签名。这是一个DSA签名，和URL`/simple/package`包含的内容对等，采用DER格式，是SHA-1和DSA的结合<sup>4</sup>。
+对于每个软件包，`/serversig/package` 中存放了它们的镜像签名。这是一个 DSA 签名，和 URL `/simple/package` 包含的内容对等，采用 DER 格式，是 SHA-1 和 DSA 的结合<sup>4</sup>。
 
 客户端从镜像服务器下载软件包时必须经过以下验证：
-
-1. 下载`/simple`页面，计算它的`SHA-1`哈希值。
-2. 计算这个哈希值的DSA签名。
-3. 下载对应的`/serversig`，将它和第二步中生成的签名进行比对。
-4. 计算并验证所有下载文件的MD5值（和`/simple`页面中的内容对比）。
+1. 下载 `/simple` 页面，计算它的 SHA-1 哈希值。
+2. 计算这个哈希值的 DSA 签名。
+3. 下载对应的 `/serversig`，将它和第二步中生成的签名进行比对。
+4. 计算并验证所有下载文件的 MD5 值（和 `/simple` 页面中的内容对比）。
 
 在从中央服务器下载软件包时不需要进行上述验证，客户端也不应该进行验证，以减少计算量。
 
-这些密钥大约每隔一年会被更新一次。镜像服务器需要重新获取所有的`/serversig`页面内容，使用镜像服务的客户端也需要通过可靠的方式获取新密钥。一种做法是从`https://pypi.python.org/serverkey`下载。为了检测拦截攻击，客户端需要通过CAC认证中心验证服务端的SSL证书。
+这些密钥大约每隔一年会被更新一次。镜像服务器需要重新获取所有的 `/serversig` 页面内容，使用镜像服务的客户端也需要通过可靠的方式获取新密钥。一种做法是从 `https://pypi.python.org/serverkey` 下载。为了检测拦截攻击，客户端需要通过 CAC 认证中心验证服务端的 SSL 证书。
 
 ## 14.5 实施细节
 上文提到的大多数改进方案都在`Distutils2`中实现了。`setup.py`文件已经退出历史舞台，取而代之的是`setup.cfg`，一个类似`.ini`类型的文件，它描述了项目的所有信息。这样做可以让打包人员方便地改变软件包的安装方式，而不需要接触Python语言。以下是一个配置文件的示例：
