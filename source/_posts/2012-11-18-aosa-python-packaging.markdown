@@ -513,8 +513,7 @@ resources =
 这些密钥大约每隔一年会被更新一次。镜像服务器需要重新获取所有的 `/serversig` 页面内容，使用镜像服务的客户端也需要通过可靠的方式获取新密钥。一种做法是从 `https://pypi.python.org/serverkey` 下载。为了检测拦截攻击，客户端需要通过 CAC 认证中心验证服务端的 SSL 证书。
 
 ## 14.5 实施细节
-上文提到的大多数改进方案都在`Distutils2`中实现了。`setup.py`文件已经退出历史舞台，取而代之的是`setup.cfg`，一个类似`.ini`类型的文件，它描述了项目的所有信息。这样做可以让打包人员方便地改变软件包的安装方式，而不需要接触Python语言。以下是一个配置文件的示例：
-
+上文提到的大多数改进方案都在 Distutils2 中实现了。`setup.py` 文件已经退出历史舞台，取而代之的是 `setup.cfg`，一个类似 `.ini` 类型的文件，它描述了项目的所有信息。这样做可以让打包人员方便地改变软件包的安装方式，而不需要接触 Python 语言。以下是一个配置文件的示例：
 ```
 [metadata]
 name = MPTools
@@ -543,55 +542,49 @@ resources =
     etc/mopytools.cfg {confdir}/mopytools
 ```
 
-`Distutils2`会将这个文件用作于：
+Distutils2 会将这个文件用作于：
+* 生成 `META-1.2` 格式的元信息，可以用作多种用途，如在 PyPI 上注册项目。
+* 执行任何打包管理命令，如 `sdist`。
+* 安装一个以 Distutils2 为基础的项目。
 
-* 生成`META-1.2`格式的元信息，可以用作多种用途，如在PyPI上注册项目。
-* 执行任何打包管理命令，如`sdist`。
-* 安装一个以`Distutils2`为基础的项目。
+Distutils2 还通过 `version`模块实现了 `VERSION` 元信息。
 
-`Distutils2`还通过`version`模块实现了`VERSION`元信息。
+对 `INSTALL-DB` 元信息的实现会被包含在 Python3.3 的 pkgutil 模块中。在过度版本中，它的功能会由 Distutils2 完成。它所提供的 API 可以让我们浏览系统中已安装的项目。
 
-对`INSTALL-DB`元信息的实现会被包含在Python3.3的`pkgutil`模块中。在过度版本中，它的功能会由`Distutils2`完成。它所提供的API可以让我们浏览系统中已安装的项目。
-
-以下是`Distutils2`提供的核心功能：
-
+以下是 Distutils2 提供的核心功能：
 * 安装、卸载
 * 依赖树
 
 ## 14.6 经验教训
-### 14.6.1 PEP的重要性
+### 14.6.1 PEP 的重要性
+要改变像 Python 打包系统这样庞大和复杂的架构必须通过谨慎地修改 PEP 标准来进行。据我所知，任何对PEP的修改和添加都要历经一年左右的时间。
 
-要改变像Python打包系统这样庞大和复杂的架构必须通过谨慎地修改PEP标准来进行。据我所知，任何对PEP的修改和添加都要历经一年左右的时间。
+社区中一直以来有个错误的做法：为了改善某个问题，就肆意扩展项目元信息，或是修改 Python 程序的安装方式，而不去尝试修订它所违背的 PEP 标准。
 
-社区中一直以来有个错误的做法：为了改善某个问题，就肆意扩展项目元信息，或是修改Python程序的安装方式，而不去尝试修订它所违背的PEP标准。
+换句话说，根据你所使用的安装工具的不同，如 Distutils 和 Setuptools，它们安装应用程序的方式就是不同的。这些工具的确解决了一些问题，但却会引发一连串的新问题。以操作系统的打包工具为例，管理员必须面对多个 Python 标准：官方文档所描述的标准，Setuptools 强加给大家的标准。
 
-换句话说，根据你所使用的安装工具的不同，如`Distutils`和`Setuptools`，它们安装应用程序的方式就是不同的。这些工具的确解决了一些问题，但却会引发一连串的新问题。以操作系统的打包工具为例，管理员必须面对多个Python标准：官方文档所描述的标准，`Setuptools`强加给大家的标准。
-
-但是，`Setuptools`能够有机会在实际环境中大范围地（在整个社区中）进行实验，创新的进度很快，得到的反馈信息也是无价的。我们可以据此撰写出更切合实际的PEP新标准。所以，很多时候我们需要能够察觉到某个第三方工具在为Python社区做出贡献，并应该起草一个新的PEP标准来解决它所提出的问题。
+但是，Setuptools 能够有机会在实际环境中大范围地（在整个社区中）进行实验，创新的进度很快，得到的反馈信息也是无价的。我们可以据此撰写出更切合实际的 PEP 新标准。所以，很多时候我们需要能够察觉到某个第三方工具在为 Python 社区做出贡献，并应该起草一个新的 PEP 标准来解决它所提出的问题。
 
 ### 14.6.2 一个被纳入标准库的项目就已经死亡了一半
+这个标题是援引 Guido van Rossum 的话，而事实上，Python 的这种战争式的哲学也的确冲击了我们的努力成果。
 
-这个标题是援引Guido van Rossum的话，而事实上，Python的这种战争式的哲学也的确冲击了我们的努力成果。
+Distutils 是 Python 标准库之一，将来 Distutils2 也会成为标准库。一个被纳入标准库的项目很难再对其进行改造。虽然我们有正常的项目更新流程，即经过两个 Python 次版本就可以对某个 API 进行删改，但一旦某个 API 被发布，它必定会持续存在多年。
 
-`Distutils`是Python标准库之一，将来`Distutils2`也会成为标准库。一个被纳入标准库的项目很难再对其进行改造。虽然我们有正常的项目更新流程，即经过两个Python次版本就可以对某个API进行删改，但一旦某个API被发布，它必定会持续存在多年。
+因此，对标准库中某个项目的一次修改并不是简单的 Bug 修复，而很有可能影响整个生态系统。所以，当你需要进行重大更新时，就必须创建一个新的项目。
 
-因此，对标准库中某个项目的一次修改并不是简单的bug修复，而很有可能影响整个生态系统。所以，当你需要进行重大更新时，就必须创建一个新的项目。
-
-我之所以深有体会，就是因为在我对`Distutils`进行了超过一年的修改后，还是不得不回滚所有的代码，开启一个新的`Distutils2`项目。将来，如果我们的标准又一次发生了重大改变，很有可能会产生`Distutils3`项目，除非未来某一天标准库会作为独立的项目发行。
+我之所以深有体会，就是因为在我对 Distutils 进行了超过一年的修改后，还是不得不回滚所有的代码，开启一个新的 Distutils2 项目。将来，如果我们的标准又一次发生了重大改变，很有可能会产生 Distutils3 项目，除非未来某一天标准库会作为独立的项目发行。
 
 ### 14.6.3 向前兼容
+要改变 Python 项目的打包方式，其过程是非常漫长的：Python 的生态系统中包含了那么多的项目，它们都采用旧的打包工具管理，一定会遇到诸多阻力。（文中一些章节描述的问题，我们花费了好几年才达成共识，而不是我之前预想的几个月。）对于 Python3，可能会花费数年的时间才能将所有的项目都迁移到新的标准中去。
 
-要改变Python项目的打包方式，其过程是非常漫长的：Python的生态系统中包含了那么多的项目，它们都采用旧的打包工具管理，一定会遇到诸多阻力。（文中一些章节描述的问题，我们花费了好几年才达成共识，而不是我之前预想的几个月。）对于Python3，可能会花费数年的时间才能将所有的项目都迁移到新的标准中去。
-
-这也是为什么我们做的任何修改都必须兼容旧的打包工具，这是`Distutils2`编写过程中非常棘手的问题。
+这也是为什么我们做的任何修改都必须兼容旧的打包工具，这是 Distutils2 编写过程中非常棘手的问题。
 
 例如，一个以新标准进行打包的项目可能会依赖一个尚未采用新标准的其它项目，我们不能因此中断安装过程，并告知用户这是一个无法识别的依赖项。
 
-举例来说，`INSTALL-DB`元信息的实现中会包含那些用`Distutils`、`Pip`、`Distribution`、或`Setuptools`安装的项目。`Distutils2`也会为那些使用`Distutils`安装的项目生成新的元信息。
+举例来说，`INSTALL-DB`元信息的实现中会包含那些用 Distutils、Pip、Distribution、或 Setuptools 安装的项目。Distutils2 也会为那些使用 Distutils 安装的项目生成新的元信息。
 
 ## 14.7 参考和贡献者
-本文的部分章节直接摘自PEP文档，你可以在`http://python.org`中找到原文：
-
+本文的部分章节直接摘自 PEP 文档，你可以在 `http://python.org` 中找到原文：
 * PEP 241: Metadata for Python Software Packages 1.0: http://python.org/peps/pep-0214.html
 * PEP 314: Metadata for Python Software Packages 1.1: http://python.org/peps/pep-0314.html
 * PEP 345: Metadata for Python Software Packages 1.2: http://python.org/peps/pep-0345.html
@@ -599,10 +592,9 @@ resources =
 * PEP 381: Mirroring infrastructure for PyPI: http://python.org/peps/pep-0381.html
 * PEP 386: Changing the version comparison module in Distutils: http://python.org/peps/pep-0386.html
 
-在这里我想感谢所有为打包标准的制定做出贡献的人们，你可以在PEP中找到他们的名字。我还要特别感谢“打包别动队”的成员们。还要谢谢Alexis Metaireau、Toshio Kuratomi、Holger Krekel、以及Stefane Fermigier，感谢他们对本文提供的反馈。
+在这里我想感谢所有为打包标准的制定做出贡献的人们，你可以在PEP中找到他们的名字。我还要特别感谢“打包别动队”的成员们。还要谢谢 Alexis Metaireau、Toshio Kuratomi、Holger Krekel、以及 Stefane Fermigier，感谢他们对本文提供的反馈。
 
 本章中讨论的项目有：
-
 * Distutils: http://docs.python.org/distutils
 * Distutils2: http://packages.python.org/Distutils2
 * Distribute: http://packages.python.org/distribute
@@ -611,7 +603,7 @@ resources =
 * Virtualenv: http://pypi.python.org/pypi/virtualenv
 
 ## 脚注
-1. 文中引用的Python改进提案（Python Enhancement Proposals，简称PEP）会在本文最后一节整理。
-2. 过去被命名为CheeseShop
-3. 即RFC 3280 SubjectPublishKeyInfo中定义的1.3.14.3.2.12算法。
-4. 即RFC 3279 Dsa-Sig-Value中定义的1.2.840.10040.4.3算法。
+1. 文中引用的 Python 改进提案（Python Enhancement Proposals，简称 PEP）会在本文最后一节整理。
+2. 过去被命名为 CheeseShop
+3. 即 RFC 3280 SubjectPublishKeyInfo 中定义的 1.3.14.3.2.12 算法。
+4. 即 RFC 3279 Dsa-Sig-Value 中定义的 1.2.840.10040.4.3 算法。
