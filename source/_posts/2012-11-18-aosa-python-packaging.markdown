@@ -152,7 +152,7 @@ else:
 
 但这种做法往往会让事情更糟。要注意，这个脚本是用来将项目的源码包发布到 PyPI 上的，这样写就说明它向 PyPI 上传的 `Metadata` 文件会因为该脚本运行环境的不同而不同。换句话说，这使得我们无法在元信息文件中看出这个项目依赖于特定的平台。
 
-### 14.3.3 PyPI的架构设计
+### 14.3.3 PyPI 的架构设计
 
 ![图14.3 PyPI 工作流](/images/aosa-python-packaging/pypi-workflow.png)
 
@@ -262,7 +262,7 @@ Server response (200): OK
 
 ### 14.3.4 Python 安装目录的结构
 在使用 `python setup.py install` 安装一个 Python 项目后，Distutils 这一 Python 核心类库会负责将程序代码复制到目标系统的相应位置。
-* **Python包**和模块会被安装到 Python 解释器程序所在的目录中，并随解释器启动：Ubuntu 系统中会安装到 `/usr/local/lib/python2.6/dist-packages/`，Fedora 则是 `/usr/local/lib/python2.6/sites-packages/`。
+* **Python包**和模块会被安装到 Python 解释器程序所在的目录中，并随解释器启动：Ubuntu 系统中会安装到 `/usr/local/lib/python2.6/dist-packages/`，Fedora 则是 `/usr/local/lib/python2.6/site-packages/`。
 * 项目中的**数据文件**可以被安装到任何位置。
 * **可执行文件**会被安装到系统的 `bin` 目录下，依平台类型而定，可能是 `/usr/local/bin`，或是其它指定的目录。
 
@@ -375,7 +375,7 @@ Provides-Dist: transaction
 
 `Obsoletes-Dist` 主要用于将其它项目标记为本项目的过期版本。
 ```
-ObsoletesDist: OldName
+Obsoletes-Dist: OldName
 ```
 
 #### 环境标识
@@ -465,7 +465,7 @@ resources =
 ![图14.5：安装工具](/images/aosa-python-packaging/installer.png)
 
 ### 14.4.4 改进 PypI
-上文提到过，PyPI 目前是一个单点故障源。PEP 380 中正式提出了这个问题，并定义了一个镜像协议，使得用户可以在 PyPI 出现问题时连接到其他源。这个协议的目的是让社区成员可以在世界各地搭建起 PyPI 镜像。
+上文提到过，PyPI 目前是一个单点故障源。PEP 381 中正式提出了这个问题，并定义了一个镜像协议，使得用户可以在 PyPI 出现问题时连接到其他源。这个协议的目的是让社区成员可以在世界各地搭建起 PyPI 镜像。
 
 ![图14.6：镜像](/images/aosa-python-packaging/mirroring.png)
 
@@ -496,7 +496,7 @@ resources =
 * 镜像服务被篡改
 * 服务器和客户端之间遭到拦截攻击
 
-对于第一种攻击，软件包的作者就需要使用自己的PGP密钥来对软件包进行加密，这样其他用户就能判断他所下载的软件包是来自可信任的作者的。镜像服务协议中只对第二种攻击做了预防，不过有些措施也可以预防拦截攻击。
+对于第一种攻击，软件包的作者就需要使用自己的 PGP 密钥来对软件包进行加密，这样其他用户就能判断他所下载的软件包是来自可信任的作者的。镜像服务协议中只对第二种攻击做了预防，不过有些措施也可以预防拦截攻击。
 
 中央服务器会在 `/serverkey` 这个 URL 下提供一个 DSA 密钥，它是用`opensll dsa-pubout`<sup>3</sup> 生成的 PEM 格式的密钥。这个 URL 不能被镜像服务器收录，客户端必须从主服务器中获取这个 serverkey 密钥，或者使用 PyPI 客户端本身自带的密钥。镜像服务器也是需要下载这个密钥的，用来检测密钥是否有更新。
 
@@ -585,7 +585,7 @@ Distutils 是 Python 标准库之一，将来 Distutils2 也会成为标准库�
 
 ## 14.7 参考和贡献者
 本文的部分章节直接摘自 PEP 文档，你可以在 `http://python.org` 中找到原文：
-* PEP 241: Metadata for Python Software Packages 1.0: http://python.org/peps/pep-0214.html
+* PEP 241: Metadata for Python Software Packages 1.0: http://python.org/peps/pep-0241.html
 * PEP 314: Metadata for Python Software Packages 1.1: http://python.org/peps/pep-0314.html
 * PEP 345: Metadata for Python Software Packages 1.2: http://python.org/peps/pep-0345.html
 * PEP 376: Database of Installed Python Distributions: http://python.org/peps/pep-0376.html
