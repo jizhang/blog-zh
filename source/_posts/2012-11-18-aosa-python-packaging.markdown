@@ -1,7 +1,7 @@
 ---
 title: "开源软件架构 - 卷1：第14章 Python 打包工具"
 categories: [Translation]
-tags: [aosa, python]
+tags: [python, opensource]
 date: 2012-11-18 19:20
 ---
 
