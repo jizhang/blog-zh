@@ -1,0 +1,38 @@
+# Header
+menu:
+  首页: /
+  大数据: /categories/Big-Data/
+  编程: /categories/Programming/
+  DevOps: /categories/DevOps/
+  翻译: /categories/Translation/
+  全部文章: /archives/
+  English: https://jerrydata.dev
+rss: /atom.xml
+banner: /zh/banner.jpg
+subtitle: If I rest, I rust.
+
+# Content
+excerpt_link: 阅读全文
+fancybox: true
+recent_posts_limits: 5
+# Footer
+copyright: |-
+  <p xmlns:cc="http://creativecommons.org/ns#" >This work is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+# Sidebar
+sidebar: right
+widgets:
+- qrcode
+- tagcloud
+- archive
+- recent_posts
+
+# Miscellaneous
+google_analytics: G-XGPVRTV36D
+favicon: /favicon.png
+
+# Header links
+# Each name must correspond to the icon name of Fork Awesome
+# https://forkaweso.me/Fork-Awesome/icons/
+links:
+  github: https://github.com/jizhang
