@@ -12,15 +12,19 @@ jobs:
         with:
           submodules: recursive
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: yarn
+          cache: pnpm
 
       - name: Build
         run: |
-          yarn install --frozen-lockfile
-          yarn build
+          pnpm install --frozen-lockfile
+          pnpm build
           tar zcf build.tar.gz -C public .
 
       - uses: actions/upload-artifact@v4
