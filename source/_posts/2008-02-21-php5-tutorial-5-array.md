@@ -6,7 +6,7 @@ tags: [php, tutorial]
 ---
 
 ## 数组的创建
-### 1. `$arr = array([key1 =>] value1, [[key2 =>] value2, ...]`
+### 1. `$arr = array([key1 =>] value1, [[key2 =>] value2, ...])`
 其中 `$arr` 是数组名，`array()` 是空数组，其中的 `key1`、`key2` 分别是数组元素 `value1`、`value2` 的索引，它可以是整数或字符串，如果省略则默认为从 0 开始的整数列；数组元素可以是任意类型，包括数组。如：
 ```php
 $arr = array(1, 2, 3);
